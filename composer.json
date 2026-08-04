@@ -19,5 +19,10 @@
     "psr-4": {
       "Zotlo\\Connect\\": "src/Zotlo"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Zotlo\\Connect\\Tests\\": "tests"
+    }
   }
 }
