@@ -2,6 +2,8 @@
 
 namespace Zotlo\Connect\Response;
 
+use Zotlo\Connect\Enum\PaymentMethod;
+
 class TransactionResponse
 {
     private int $id;
@@ -613,6 +615,8 @@ class TransactionResponse
     }
 
     /**
+     * Raw gateway-level value. For the resolved instrument use getEffectivePaymentMethod().
+     *
      * @return string|null
      */
     public function getPaymentMethod()
@@ -626,6 +630,31 @@ class TransactionResponse
     public function setPaymentMethod(?string $paymentMethod)
     {
         $this->paymentMethod = $paymentMethod;
+    }
+
+    /**
+     * How the transaction was actually paid for, resolved from `custom_parameters`.
+     *
+     * @return string One of the Zotlo\Connect\Enum\PaymentMethod constants.
+     */
+    public function getEffectivePaymentMethod(): string
+    {
+        if (strtolower((string)$this->paymentMethod) === PaymentMethod::PAYPAL) {
+            return PaymentMethod::PAYPAL;
+        }
+
+        $parameters = is_array($this->custom_parameters) ? $this->custom_parameters : [];
+
+        if (!empty($parameters['apm'])) {
+            $wallet = ((array)$parameters['apm'])['paymentMethod'] ?? null;
+            $wallets = [PaymentMethod::APPLE_PAY, PaymentMethod::GOOGLE_PAY];
+
+            return in_array($wallet, $wallets, true) ? $wallet : PaymentMethod::NONE_3D;
+        }
+
+        return filter_var($parameters['threeds'] ?? false, FILTER_VALIDATE_BOOLEAN)
+            ? PaymentMethod::THREE_D
+            : PaymentMethod::NONE_3D;
     }
 
     /**
