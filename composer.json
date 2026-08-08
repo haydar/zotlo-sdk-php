@@ -8,13 +8,21 @@
   "homepage": "https://zotlo.com",
   "license": "MIT",
   "require": {
-    "php": ">=7.1.0",
+    "php": ">=8.0",
     "ext-curl": "*",
     "guzzlehttp/guzzle": "^6.0.0|^7.4.5"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^8.5|^9.5"
   },
   "autoload": {
     "psr-4": {
       "Zotlo\\Connect\\": "src/Zotlo"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Zotlo\\Connect\\Tests\\": "tests"
     }
   }
 }

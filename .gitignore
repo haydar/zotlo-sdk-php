@@ -4,3 +4,4 @@ composer.lock
 .project
 .metadata
 vendor
+.phpunit.result.cache
